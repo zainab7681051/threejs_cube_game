@@ -16,9 +16,22 @@ document.body.appendChild(renderer.domElement);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 
-const mainCubeGometry = new THREE.BoxGeometry(1, 1, 1);
-const mainCubeMaterial = new THREE.MeshStandardMaterial({ color: 0xff59c7 });
-const cube = new THREE.Mesh(mainCubeGometry, mainCubeMaterial);
+class Box extends THREE.Mesh {
+  constructor({ width, height, depth }) {
+    super(
+      new THREE.BoxGeometry(width, height, depth),
+      new THREE.MeshStandardMaterial({ color: 0xff59c7 })
+    ); //calling the cunstructor of the parent class-THREE.mesh
+    this.height = height;
+    this.width = width;
+    this.depth = depth;
+  }
+}
+const cube = new Box({
+  width: 1,
+  height: 1,
+  depth: 1,
+});
 cube.castShadow = true;
 scene.add(cube);
 
