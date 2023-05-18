@@ -66,7 +66,7 @@ const cube = new Box({
   height: 1,
   depth: 1,
   color: 0xff59c7,
-  velocity: { x: 0, y: -0.01, z: 0 },
+  velocity: { x: 0, y: -0.1, z: 0 },
 });
 cube.castShadow = true;
 scene.add(cube);
@@ -86,12 +86,11 @@ light.position.y = 3;
 light.position.z = 2;
 light.castShadow = true;
 scene.add(light);
-camera.position.z = 5;
-
+// camera.position.z = 5;
+camera.position.z = 11.792347608815906;
 function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
   cube.update(ground);
-  console.log(camera.position.z);
 }
 animate();
