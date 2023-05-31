@@ -68,7 +68,7 @@ class Box extends THREE.Mesh {
 	}
 	update(ground) {
 		this.updateSides();
-		if (zAccelerate) this.velocity.z += 0.001
+		if (this.zAccelerate) this.velocity.z += 0.01 //enemy speed accelaration on the z-axis
 		this.position.x += this.velocity.x;
 		this.position.z += this.velocity.z;
 		this.applyGravity(ground); //gravity on the y-axis
@@ -202,11 +202,11 @@ const enemy = new Box({
 	position: {
 		x: 0,
 		y: 0,
-		z: -0.05,
+		z: -4,
 	},
 	velocity: {
 		x: 0,
-		y: 0,
+		y: -0.1,
 		z: 0,
 	},
 	zAccelerate: true
@@ -238,6 +238,7 @@ function animate() {
 				box2: enemy
 			})) {
 			cancelAnimationFrame(animationId);
+			// console.log('kkkk')
 		}
 	});
 }
