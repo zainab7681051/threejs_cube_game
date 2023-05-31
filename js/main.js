@@ -189,33 +189,14 @@ window.addEventListener("keyup", (event) => {
 		keys.w.pressed = false;
 		break;
 	default:
-		// statements_def
 		break;
 	}
 });
 
-const enemy = new Box({
-	width: 1,
-	height: 1,
-	depth: 1,
-	color: 0xff3131,
-	position: {
-		x: 0,
-		y: 0,
-		z: -4,
-	},
-	velocity: {
-		x: 0,
-		y: -0.1,
-		z: 0,
-	},
-	zAccelerate: true
-});
 
-enemy.castShadow = true;
-scene.add(enemy);
-
-const enemies = [enemy];
+const enemies = [];
+let frames = 0;
+let spawnRate = 80;
 
 function animate() {
 	const animationId = requestAnimationFrame(animate);
@@ -238,8 +219,34 @@ function animate() {
 				box2: enemy
 			})) {
 			cancelAnimationFrame(animationId);
-			// console.log('kkkk')
 		}
 	});
+
+	if (frames % spawnRate === 0)
+	{
+		if (spawnRate > 20) spawnRate -= 20
+		const enemy = new Box({
+			width: 1,
+			height: 1,
+			depth: 1,
+			color: 0xff3131,
+			position: {
+				x: (Math.random() - 0.5) * 5,
+				y: 0,
+				z: -4,
+			},
+			velocity: {
+				x: 0,
+				y: -0.1,
+				z: 0.05,
+			},
+			zAccelerate: true
+		});
+
+		enemy.castShadow = true;
+		scene.add(enemy);
+		enemies.push(enemy);
+	}
+	frames++;
 }
 animate();
