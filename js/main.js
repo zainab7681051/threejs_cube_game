@@ -1,3 +1,6 @@
+//TODO: change velocity based on screen frame rate(diffrent screens have diffrent frame rate and refresh rate)
+//TODO: change the enviroment into a highway traffic game or something like that
+
 import * as THREE from "three";
 import {
 	OrbitControls
@@ -11,7 +14,10 @@ const camera = new THREE.PerspectiveCamera(
 	1000
 );
 
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({
+	alpha: true,
+	antialias: true
+});
 renderer.shadowMap.enabled = true;
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement); //appends the canvas for 3d
@@ -39,8 +45,8 @@ class Box extends THREE.Mesh {
 	}) {
 		super(
 			new THREE.BoxGeometry(width, height, depth),
-			new THREE.MeshStandardMaterial({
-				color: color,
+    new THREE.MeshStandardMaterial({
+          color: color,
 			})
 		); //calling the cunstructor of the parent class-THREE.mesh
 		this.height = height;
@@ -48,7 +54,7 @@ class Box extends THREE.Mesh {
 		this.depth = depth;
 		this.velocity = velocity;
 		this.position.set(position.x, position.y, position.z);
-		this.gravity = -0.002;
+		this.gravity = -0.03;
 		this.zAccelerate = zAccelerate;
 		this.bottom = this.position.y - this.height / 2; //bottom value of the mesh object
 		this.top = this.position.y + this.height / 2; //top value of the mesh object
@@ -68,7 +74,7 @@ class Box extends THREE.Mesh {
 	}
 	update(ground) {
 		this.updateSides();
-		if (this.zAccelerate) this.velocity.z += 0.01 //enemy speed accelaration on the z-axis
+		if (this.zAccelerate) this.velocity.z += 0.1 //enemy speed accelaration on the z-axis
 		this.position.x += this.velocity.x;
 		this.position.z += this.velocity.z;
 		this.applyGravity(ground); //gravity on the y-axis
@@ -82,7 +88,8 @@ class Box extends THREE.Mesh {
 				box2: ground,
 			})
 		) {
-			this.velocity.y += 0.8; //apllying friction; cube bounces off of the ground couple of times after colliding but eventually stops due to friction
+			const friction = 0.2
+			this.velocity.y *= friction; //apllying friction; cube bounces off of the ground couple of times after colliding but eventually stops due to friction
 			this.velocity.y = -this.velocity.y; //reversing velocity from going down to going up so as to add the bouncing effect
 		} else {
 			this.position.y += this.velocity.y;
@@ -111,7 +118,7 @@ const cube = new Box({
 	color: 0xff59c7,
 	velocity: {
 		x: 0,
-		y: -0.1,
+		y: -0.4,
 		z: 0,
 	},
 });
@@ -119,9 +126,9 @@ cube.castShadow = true;
 scene.add(cube);
 
 const ground = new Box({
-	width: 5,
+	width: 10,
 	height: 0.5,
-	depth: 10,
+	depth: 50,
 	color: 0xd9d4d7,
 	position: {
 		x: 0,
@@ -134,11 +141,15 @@ scene.add(ground);
 
 const light = new THREE.DirectionalLight(0xffffff, 1);
 light.position.y = 3;
-light.position.z = 2;
+light.position.z = 1;
 light.castShadow = true;
 scene.add(light);
+
+scene.add(new THREE.AmbientLight(0xffffff, 0.5))
 // camera.position.z = 5;
-camera.position.z = 11.792347608815906;
+// camera.position.z = 11.792347608815906;
+camera.position.set(4.62, 2.74, 8)
+
 
 const keys = {
 	a: {
@@ -168,6 +179,8 @@ window.addEventListener("keydown", (event) => {
 	case "KeyW":
 		keys.w.pressed = true;
 		break;
+	case "Space":
+		cube.velocity.y = 0.3;
 	default:
 		// statements_def
 		break;
@@ -205,7 +218,6 @@ function animate() {
 	cube.velocity.x = 0;
 	cube.velocity.z = 0;
 
-	//TODO: change velocity based on screen frame rate(diffrent screens have diffrent frame rate and refresh rate)
 	if (keys.a.pressed) cube.velocity.x = -0.5;
 	else if (keys.d.pressed) cube.velocity.x = 0.5;
 	if (keys.s.pressed) cube.velocity.z = 0.5;
@@ -231,13 +243,13 @@ function animate() {
 			depth: 1,
 			color: 0xff3131,
 			position: {
-				x: (Math.random() - 0.5) * 5,
+				x: (Math.random() - 0.5) * 9,
 				y: 0,
-				z: -4,
+				z: -20,
 			},
 			velocity: {
 				x: 0,
-				y: -0.1,
+				y: -0.4,
 				z: 0.05,
 			},
 			zAccelerate: true
