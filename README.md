@@ -1,2 +1,2 @@
 # threejs 3D-cube javascript game
-coming soon...
+3D cube game in three.js 

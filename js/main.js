@@ -88,6 +88,7 @@ class Box extends THREE.Mesh {
     this.left = this.position.x - this.width / 2;
     this.front = this.position.z + this.depth / 2;
     this.back = this.position.z - this.depth / 2;
+    this.falling = false;
   }
 
   updateSides() {
@@ -119,6 +120,7 @@ class Box extends THREE.Mesh {
       this.velocity.y = -this.velocity.y; //reversing velocity from going down to going up so as to add the bouncing effect
     } else {
       this.position.y += this.velocity.y;
+      if (this.top < ground.bottom) this.falling = true;
     }
   }
 }
@@ -228,7 +230,6 @@ window.addEventListener("keyup", (event) => {
 });
 
 const enemies = [];
-
 function animate() {
   const animationId = requestAnimationFrame(animate);
   renderer.render(scene, camera);
@@ -277,6 +278,10 @@ function animate() {
     enemy.castShadow = true;
     scene.add(enemy);
     enemies.push(enemy);
+  }
+
+  if (cube.falling) {
+    setTimeout(cancelAnimationFrame(animationId), 3000);
   }
   FRAMES += 1;
 }
